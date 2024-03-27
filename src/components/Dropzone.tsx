@@ -15,10 +15,13 @@ export function Dropzone() {
     setFile(null);
   }, []);
 
-  const onDrop = useCallback((file: File[]) => {
-    setFile(file[0]);
-    setValue("file", file[0]);
-  }, []);
+  const onDrop = useCallback(
+    (file: File[]) => {
+      setFile(file[0]);
+      setValue("file", file[0]);
+    },
+    [setValue]
+  );
 
   const dropzone = useDropzone({
     onDrop,
