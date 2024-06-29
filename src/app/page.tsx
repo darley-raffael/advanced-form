@@ -1,11 +1,15 @@
 "use client";
 import { Dropzone } from "@/components/Dropzone";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const fileInputSchema = z.object({
+  name: z.string().min(1, "O nome e obrigatório"),
+  email: z.string().email("Email invalido"),
   message: z.string().optional(),
+  price: z.string(),
   file: z.instanceof(File),
   iceCreamChoice: z.string(),
 });
@@ -19,17 +23,33 @@ export default function Home() {
   });
 
   const {
+    watch,
+    setValue,
     formState: { errors },
     control,
   } = form;
 
-  console.log(errors);
+  const price = watch("price");
+
+  const maskPrice = (value: string) => {
+    if (!value) return "";
+
+    value = value.replace(/\D/g, "");
+    return Number(value).toLocaleString("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  useEffect(() => {
+    setValue("price", maskPrice(price));
+  }, [price]);
 
   const onSubmit = (data: FormFileProps) => {
     console.log({ data: data });
     console.log(errors.file);
     console.log(data.file);
-    alert(`Enviado ${JSON.stringify(data)}`);
   };
 
   return (
@@ -41,7 +61,54 @@ export default function Home() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <input type="text" placeholder="Mensagem" className="input" />
+            <div className="w-full">
+              <label htmlFor="name" className="label">
+                Nome
+              </label>
+              <input
+                type="text"
+                placeholder="Nome Complet0"
+                className="input w-full"
+                {...form.register("name")}
+                id="name"
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="email" className="label">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="Email"
+                className="input w-full"
+                {...form.register("email")}
+                id="email"
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="message" className="label">
+                Mensagem
+              </label>
+              <input
+                type="text"
+                placeholder="Mensagem"
+                className="input w-full"
+                {...form.register("message")}
+                id="message"
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="price" className="label">
+                price
+              </label>
+              <input
+                type="text"
+                placeholder="price"
+                className="input w-full"
+                {...form.register("price")}
+                id="price"
+              />
+            </div>
             <Controller
               name="iceCreamChoice"
               control={control}

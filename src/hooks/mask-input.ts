@@ -7,8 +7,6 @@ export function useMaskInput() {
     // contar quantos caracteres # tem na máscara
     const maskLength = mask.replace(/[^#]/g, "").length;
 
-    console.log(maskLength);
-
     for (let i = 0; i < mask.length; i++) {
       if (mask[i] === "#") {
         if (value[inputIndex]) {
